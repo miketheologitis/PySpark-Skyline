@@ -8,9 +8,9 @@ CHK_POINT_DIR_GLOBAL_SKYLINE = "file:///home/hadoop/chk-point-dir2"
 
 # Kafka Configurations
 KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
-KAFKA_INPUT_TOPIC = "input_skyline_topic"
-KAFKA_LOCAL_SKYLINES_TOPIC = "local_skyline_topic"
-KAFKA_OUTPUT_TOPIC = "output_skyline_topic"
+KAFKA_INPUT_TOPIC = "inputSkyline"
+KAFKA_LOCAL_SKYLINES_TOPIC = "localSkyline"
+KAFKA_OUTPUT_TOPIC = "outputSkyline"
 
 
 # Maximum and Minimum value of data points
@@ -30,5 +30,5 @@ MAXIMUM_VALUE = 1_000_000_000
 # the last micro-batch was processed. If the input source is producing data at a high rate, then the size of the micro-batch will be large.
 # If the input source is producing data at a slow rate, then the size of the micro-batch will be small.
 LOCAL_SKYLINE_TRIGGER_TIME = "30 seconds"
-GLOBAL_SKYLINE_TRIGGER_TIME = "20 seconds"
+GLOBAL_SKYLINE_TRIGGER_TIME = "15 seconds"
 
