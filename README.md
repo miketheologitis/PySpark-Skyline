@@ -80,31 +80,31 @@ Steps:
 1. Make sure `<KAFKA_INPUT_TOPIC>`, `<KAFKA_LOCAL_SKYLINES_TOPIC>` and `<KAFKA_OUTPUT_TOPIC>` have no previous data in them since the batch
 job will start with 'earliest' offsets and will read previous data. The best way to go about it is by deleting and recreating everything.
 Then feeding the data into the input topic. We give the commands for clarity:
-	1. a. 
+	-
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --delete`
 	
-	1. b. 
+	-
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --delete`
 	
-	1. c. 
+	-
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --delete`
 	
-	1. d. 
+	- 
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --create --partitions 5`
 	
-	1. e. 
+	- 
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --create --partitions 5`
 	
-	1. f. 
+	- 
 	
 	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --create --partitions 1`
 	
-	1. g. 
+	-	
 	
 	`kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv`
 	
@@ -117,9 +117,14 @@ The pure streaming application.
 Steps:
 
 1. First submit the application
-	1.a. ~$ `spark-submit` (see later)
+
+	- ~$ `spark-submit` (see later)
+	
 2. Send data to `<KAFKA_INPUT_TOPIC>`
-	2.a. ~$ `kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv`
+
+	-
+	
+	`kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv`
 
 ## `spark-submit` (same for `stream_job.py`, `batch_job.py`)
 
@@ -152,13 +157,19 @@ spark-submit \
 
 Note: Notice `--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1` and `--py-files functions.py,configurations.py`.
 
---------------------------------------------- !!! EXTREMELY IMPORTANT !!!! --------------------------------------------------------------------
+# IMPORTANT
 
 If you want to rerun the application, follow the steps again but ALSO first delete directories <CHK_POINT_DIR_LOCAL_SKYLINES> ,
 <CHK_POINT_DIR_GLOBAL_SKYLINE> as they hold the stream state-store. Streaming applications are not meant to be stopped and we have to manually
 delete these directores (for both 'stream_job.py' and 'batch_job.py') in order to rerun them.
-	1. ~$ `rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>`    (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>`)
-	2. ~$ `rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>`   (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>`)
+
+	1. 
+	
+	`rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>`    (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>`)
+	
+	2. 
+	
+	rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>`   (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>`)
 
 
 
