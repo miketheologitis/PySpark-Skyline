@@ -1,8 +1,11 @@
 # REQUIREMENTS
 
 Spark: 3.3.0   (3.3.X is fine)
+
 Kafka: kafka_2.12-3.2.1
+
 Hadoop (YARN/HDFS): hadoop-3.3.4 (Not necessarily)
+
 Python : Python 3.10.6 (Not necessarily)
 
 No extra packages required for Python.
@@ -41,16 +44,16 @@ Usage: `batch_job.py <QUERY> <ALGO_NAME> <PARAM>`
 
 `<PARAM>` : (Integer) Depending on the algorithm we give a different parameter concerning partitions (local skylines) => parallelism.
 
-	1. MR_DIM : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
-		in `<PARAM>` disjoint partitions as the paper suggets.
-		
-	2. MR_GRID : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
-		partitions (where `D` is the dimension), but not quite... In MR_GRID we have dominated partitions that get thrown away.
-		The total partitions/local-skylines we compute is exactly `<PARAM>^D - (<PARAM> - 1)^D` . Requires some thought to see
-		why this is the case, there are in depth comments in the code.
-		
-	3. MR_ANGLE : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
-		hence we compute exactly `<PARAM>^(D-1)` local skylines.
+1. MR_DIM : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
+	in `<PARAM>` disjoint partitions as the paper suggets.
+	
+2. MR_GRID : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
+	partitions (where `D` is the dimension), but not quite... In MR_GRID we have dominated partitions that get thrown away.
+	The total partitions/local-skylines we compute is exactly `<PARAM>^D - (<PARAM> - 1)^D` . Requires some thought to see
+	why this is the case, there are in depth comments in the code.
+	
+3. MR_ANGLE : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
+	hence we compute exactly `<PARAM>^(D-1)` local skylines.
 
 Important: The only thing that is not supported is MAX queries when using MR_ANGLE (in any dimension). To implement them would require
 tedious work with (negative/positive) radians. Also, there is the assumption that data lie in the FIRST octant, i.e., are positive (or zero).
