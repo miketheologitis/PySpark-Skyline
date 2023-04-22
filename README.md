@@ -34,23 +34,23 @@ Let's first see 'batch_job.py' and 'stream_job.py' input parameters (I will use 
 
 Usage: `batch_job.py <QUERY> <ALGO_NAME> <PARAM>`
 
-	`<QUERY>` : As formally defined in the paper 'Skyline Operator' we have the query. It is of the form "SKYLINE OF x1 MIN, x2 MAX, ..., xd MIN".
-		Obviously, we can use either MIN or MAX in any dimension (the previous query was just for reference). 
+`<QUERY>` : As formally defined in the paper 'Skyline Operator' we have the query. It is of the form "SKYLINE OF x1 MIN, x2 MAX, ..., xd MIN".
+	Obviously, we can use either MIN or MAX in any dimension (the previous query was just for reference). 
+	
+`<ALGO_NAME>` : (String) is the algorithm name. We have three algorithms so <ALGO_NAME> is "MR_DIM", "MR_GRID" or "MR_ANGLE".
+
+`<PARAM>` : (Integer) Depending on the algorithm we give a different parameter concerning partitions (local skylines) => parallelism.
+
+	MR_DIM : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
+		in `<PARAM>` disjoint partitions as the paper suggets.
 		
-	`<ALGO_NAME>` : (String) is the algorithm name. We have three algorithms so <ALGO_NAME> is "MR_DIM", "MR_GRID" or "MR_ANGLE".
-	
-	`<PARAM>` : (Integer) Depending on the algorithm we give a different parameter concerning partitions (local skylines) => parallelism.
-	
-		**MR_DIM** : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
-			in `<PARAM>` disjoint partitions as the paper suggets.
-			
-		**MR_GRID** : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
-			partitions (where `D` is the dimension), but not quite... In MR_GRID we have dominated partitions that get thrown away.
-			The total partitions/local-skylines we compute is exactly `<PARAM>^D - (<PARAM> - 1)^D` . Requires some thought to see
-			why this is the case, there are in depth comments in the code.
-			
-		**MR_ANGLE** : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
-			hence we compute exactly `<PARAM>^(D-1)` local skylines.
+	MR_GRID : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
+		partitions (where `D` is the dimension), but not quite... In MR_GRID we have dominated partitions that get thrown away.
+		The total partitions/local-skylines we compute is exactly `<PARAM>^D - (<PARAM> - 1)^D` . Requires some thought to see
+		why this is the case, there are in depth comments in the code.
+		
+	MR_ANGLE : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
+		hence we compute exactly `<PARAM>^(D-1)` local skylines.
 
 Important: The only thing that is not supported is MAX queries when using MR_ANGLE (in any dimension). To implement them would require
 tedious work with (negative/positive) radians. Also, there is the assumption that data lie in the FIRST octant, i.e., are positive (or zero).
@@ -80,20 +80,22 @@ Steps:
 1. Make sure `<KAFKA_INPUT_TOPIC>`, `<KAFKA_LOCAL_SKYLINES_TOPIC>` and `<KAFKA_OUTPUT_TOPIC>` have no previous data in them since the batch
 job will start with 'earliest' offsets and will read previous data. The best way to go about it is by deleting and recreating everything.
 Then feeding the data into the input topic. We give the commands for clarity:
-	
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --delete
-	
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --delete
-	
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --delete
+```
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --delete
 
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --create --partitions 5
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --delete
 
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --create --partitions 5`
-	
-	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --create --partitions 1
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --delete
 
-	kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --create --partitions 5
+
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --create --partitions 5`
+
+kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --create --partitions 1
+
+kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv
+
+```
 	
 2. `spark-submit` (see later)
 
