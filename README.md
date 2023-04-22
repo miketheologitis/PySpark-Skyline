@@ -1,12 +1,6 @@
-@INPROCEEDINGS{914855,
-  author={Borzsony, S. and Kossmann, D. and Stocker, K.},
-  booktitle={Proceedings 17th International Conference on Data Engineering}, 
-  title={The Skyline operator}, 
-  year={2001},
-  volume={},
-  number={},
-  pages={421-430},
-  doi={10.1109/ICDE.2001.914855}}
+# Paper
+
+S. Borzsony, D. Kossmann and K. Stocker, "The Skyline operator," Proceedings 17th International Conference on Data Engineering, Heidelberg, Germany, 2001, pp. 421-430, doi: 10.1109/ICDE.2001.914855.
 
 # REQUIREMENTS
 
