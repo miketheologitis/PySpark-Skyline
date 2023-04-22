@@ -35,7 +35,7 @@ your requirements. This is tricky but leaving them as they are.
 Let's first see 'batch_job.py' and 'stream_job.py' input parameters (I will use 'batch_job.py' - the same hold for 'stream_job.py'):
 
 Usage: batch_job.py <QUERY> <ALGO_NAME> <PARAM>
-	<QUERY> : As formally defined in the paper 'Skyline Operator' we have the query. It is of the form "SKYLINE OF x1 MIN, x2 MAX, ..., xd MIN".
+	`<QUERY>` : As formally defined in the paper 'Skyline Operator' we have the query. It is of the form "SKYLINE OF x1 MIN, x2 MAX, ..., xd MIN".
 		Obviously, we can use either MIN or MAX in any dimension (the previous query was just for reference). 
 	<ALGO_NAME> : (String) is the algorithm name. We have three algorithms so <ALGO_NAME> is "MR_DIM", "MR_GRID" or "MR_ANGLE".
 	<PARAM> : (Integer) Depending on the algorithm we give a different parameter concerning partitions (local skylines) => parallelism.
