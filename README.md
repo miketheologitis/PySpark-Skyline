@@ -70,43 +70,30 @@ Examples:
 
 ### Batch job aka `batch_job.py` 
 
-'batch_job.py' is created to run tests and time the algorithm. It is a streaming application (just like 'stream_job.py') but its job is to 
-process all the data (when available) in <KAFKA_INPUT_TOPIC> (once), i.e., in a single batch. Then, again, in a single batch it process everything 
-(when available) from <KAFKA_LOCAL_SKYLINES_TOPIC> and output the final skyline. This application is extremely useful because in the pure streaming
-'stream_job.py' we cannot time things accurately and dig around to see how the algorithms compare.
+`batch_job.py` is created to run tests and time the algorithm. It is a streaming application (just like `stream_job.py`) but its job is to 
+process all the data (when available) in `<KAFKA_INPUT_TOPIC>` (once), i.e., in a single batch. Then, again, in a single batch it process everything 
+(when available) from `<KAFKA_LOCAL_SKYLINES_TOPIC>` and output the final skyline. This application is extremely useful because in the pure streaming
+`stream_job.py` we cannot time things accurately and dig around to see how the algorithms compare.
 
 Steps:
 
 1. Make sure `<KAFKA_INPUT_TOPIC>`, `<KAFKA_LOCAL_SKYLINES_TOPIC>` and `<KAFKA_OUTPUT_TOPIC>` have no previous data in them since the batch
 job will start with 'earliest' offsets and will read previous data. The best way to go about it is by deleting and recreating everything.
 Then feeding the data into the input topic. We give the commands for clarity:
-	-
 	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --delete`
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --delete
 	
-	-
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --delete
 	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --delete`
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --delete
+
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --create --partitions 5
+
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --create --partitions 5`
 	
-	-
-	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --delete`
-	
-	- 
-	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_INPUT_TOPIC> --create --partitions 5`
-	
-	- 
-	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_LOCAL_SKYLINES_TOPIC> --create --partitions 5`
-	
-	- 
-	
-	`kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --create --partitions 1`
-	
-	-	
-	
-	`kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv`
+	kafka-topics.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic <KAFKA_OUTPUT_TOPIC> --create --partitions 1
+
+	kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv
 	
 2. `spark-submit` (see later)
 
