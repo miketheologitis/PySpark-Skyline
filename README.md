@@ -1,3 +1,13 @@
+@INPROCEEDINGS{914855,
+  author={Borzsony, S. and Kossmann, D. and Stocker, K.},
+  booktitle={Proceedings 17th International Conference on Data Engineering}, 
+  title={The Skyline operator}, 
+  year={2001},
+  volume={},
+  number={},
+  pages={421-430},
+  doi={10.1109/ICDE.2001.914855}}
+
 # REQUIREMENTS
 
 `Spark`: 3.3.0   (3.3.X is fine)
