@@ -1,0 +1,1 @@
+You can instead pass the dependencies through --packages on spark-submit (this is what we recommend since the application is not heavily dependant on PySpark or Kafka versions).
