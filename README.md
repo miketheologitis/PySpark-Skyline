@@ -150,19 +150,22 @@ Note: Notice `--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1` and `
 
 # IMPORTANT
 
-If you want to rerun the application, follow the steps again but ALSO first delete directories <CHK_POINT_DIR_LOCAL_SKYLINES> ,
-<CHK_POINT_DIR_GLOBAL_SKYLINE> as they hold the stream state-store. Streaming applications are not meant to be stopped and we have to manually
-delete these directores (for both 'stream_job.py' and 'batch_job.py') in order to rerun them.
-
-	1. 
+If you want to rerun the application, follow the steps again but ALSO first delete directories `<CHK_POINT_DIR_LOCAL_SKYLINES>` ,
+`<CHK_POINT_DIR_GLOBAL_SKYLINE>` as they hold the stream state-store. Streaming applications are not meant to be stopped and we have to manually
+delete these directores (for both `stream_job.py` and `batch_job.py`) in order to rerun them.
 	
-	rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>    (if they are in HDFS then: `hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>`)
-	
-	2. 
-	
-	rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>   (if they are in HDFS then: `hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>`)
+1. In filesystem 
+```
+rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>
 
+rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>
+```
+2. HDFS
+```
+hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>
 
+hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>
+```
 
 
 
