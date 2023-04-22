@@ -41,15 +41,15 @@ Usage: `batch_job.py <QUERY> <ALGO_NAME> <PARAM>`
 
 `<PARAM>` : (Integer) Depending on the algorithm we give a different parameter concerning partitions (local skylines) => parallelism.
 
-	MR_DIM : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
+	1. MR_DIM : The simplest one, we compute `<PARAM>` number of local skylines. In other words, we parition the first dimension
 		in `<PARAM>` disjoint partitions as the paper suggets.
 		
-	MR_GRID : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
+	2. MR_GRID : Now, things get interesting. `<PARAM>` is the number of times we divide EACH dimension. Hence, we get <PARAM>^D
 		partitions (where `D` is the dimension), but not quite... In MR_GRID we have dominated partitions that get thrown away.
 		The total partitions/local-skylines we compute is exactly `<PARAM>^D - (<PARAM> - 1)^D` . Requires some thought to see
 		why this is the case, there are in depth comments in the code.
 		
-	MR_ANGLE : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
+	3. MR_ANGLE : Here, `<PARAM>` is how many times we divide each angular coordinate dimension (there are D-1 angular coordinates) 
 		hence we compute exactly `<PARAM>^(D-1)` local skylines.
 
 Important: The only thing that is not supported is MAX queries when using MR_ANGLE (in any dimension). To implement them would require
@@ -61,13 +61,14 @@ algorithm. For MR_GRID, MR_DIM we need to be certain that the driver can combine
 and do not think about the driver, the algorithm reduces the amount of points in each local skyline astonishingly much!
 
 Examples:
-	`batch_job.py "SKYLINE OF x1 MIN, x2 MIN, x3 MIN" MR_ANGLE 12`
+```
+batch_job.py "SKYLINE OF x1 MIN, x2 MIN, x3 MIN" MR_ANGLE 12
 	
-	`batch_job.py "SKYLINE OF x1 MAX, x2 MIN, x3 MAX, x4 MIN, x5 MAX" MR_GRID 2`
+batch_job.py "SKYLINE OF x1 MAX, x2 MIN, x3 MAX, x4 MIN, x5 MAX" MR_GRID 2
 	
-	`batch_job.py "SKYLINE OF x1 MAX, x2 MAX, x3 MAX, x4 MIN, x5 MAX, x6 MAX, x7 MAX" MR_DIM 12`
+batch_job.py "SKYLINE OF x1 MAX, x2 MAX, x3 MAX, x4 MIN, x5 MAX, x6 MAX, x7 MAX" MR_DIM 12
+```
 	
-
 ### Batch job aka `batch_job.py` 
 
 `batch_job.py` is created to run tests and time the algorithm. It is a streaming application (just like `stream_job.py`) but its job is to 
@@ -107,12 +108,10 @@ Steps:
 
 1. First submit the application
 
-	- ~$ `spark-submit` (see later)
+	`spark-submit` (see later)
 	
 2. Send data to `<KAFKA_INPUT_TOPIC>`
 
-	-
-	
 	`kafka-console-producer.sh --bootstrap-server <KAFKA_BOOTSTRAP_SERVER> --topic KAFKA_INPUT_TOPIC> < /<PATH>/points_D_2_N_100_000.csv`
 
 ## `spark-submit` (same for `stream_job.py`, `batch_job.py`)
@@ -154,11 +153,11 @@ delete these directores (for both 'stream_job.py' and 'batch_job.py') in order t
 
 	1. 
 	
-	`rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>`    (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>`)
+	rm -r <CHK_POINT_DIR_LOCAL_SKYLINES>    (if they are in HDFS then: `hadoop fs -rm -rf <CHK_POINT_DIR_LOCAL_SKYLINES>`)
 	
 	2. 
 	
-	rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>`   (if they are in HDFS then: ~$ `hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>`)
+	rm -r <CHK_POINT_DIR_GLOBAL_SKYLINES>   (if they are in HDFS then: `hadoop fs -rm -rf <CHK_GLOBAL_DIR_LOCAL_SKYLINES>`)
 
 
 
